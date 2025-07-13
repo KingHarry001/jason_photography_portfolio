@@ -45,11 +45,6 @@ function App() {
       label: "Services",
       onClick: () => scrollToSection("services"),
     },
-    {
-      icon: <VscSend size={18} />,
-      label: "Contact",
-      onClick: () => scrollToSection("contact"),
-    },
   ];
 
   const items = [
