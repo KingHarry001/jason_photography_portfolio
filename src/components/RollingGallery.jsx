@@ -4,6 +4,7 @@ import {
   useMotionValue,
   useAnimation,
   useTransform,
+  AnimatePresence,
 } from "framer-motion";
 
 const IMGS = [
@@ -14,9 +15,10 @@ const IMGS = [
   "https://images.unsplash.com/photo-1506781961370-37a89d6b3095?q=80&w=3264&auto=format&fit=crop&ixlib=rb-4.0.3",
   "https://images.unsplash.com/photo-1599576838688-8a6c11263108?q=80&w=3870&auto=format&fit=crop&ixlib=rb-4.0.3",
   "https://images.unsplash.com/photo-1494094892896-7f14a4433b7a?q=80&w=3870&auto=format&fit=crop&ixlib=rb-4.0.3",
-  "https://plus.unsplash.com/premium_photo-1664910706524-e783eed89e71?q=80&w=3869&auto=format&fit=crop&ixlib=rb-4.0.3",
-  "https://images.unsplash.com/photo-1503788311183-fa3bf9c4bc32?q=80&w=3870&auto=format&fit=crop&ixlib=rb-4.0.3",
-  "https://images.unsplash.com/photo-1585970480901-90d6bb2a48b5?q=80&w=3774&auto=format&fit=crop&ixlib=rb-4.0.3",
+  "https://images.unsplash.com/photo-1528181304800-259b08848526?q=80&w=3870&auto=format&fit=crop&ixlib=rb-4.0.3",
+  "https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?q=80&w=3870&auto=format&fit=crop&ixlib=rb-4.0.3",
+  "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=3456&auto=format&fit=crop&ixlib=rb-4.0.3",
+  "https://images.unsplash.com/photo-1495103033382-fe343886b671?q=80&w=3870&auto=format&fit=crop&ixlib=rb-4.0.3",
 ];
 
 const RollingGallery = ({
@@ -27,6 +29,7 @@ const RollingGallery = ({
   images = images.length > 0 ? images : IMGS;
 
   const [viewportWidth, setViewportWidth] = useState(0);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const updateWidth = () => setViewportWidth(window.innerWidth);
@@ -35,18 +38,12 @@ const RollingGallery = ({
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-  const getCylinderWidth = () => {
-    if (viewportWidth <= 640) return viewportWidth * 1.2; // Mobile
-    if (viewportWidth <= 1024) return viewportWidth * 1.1; // Tablet
-    return viewportWidth * 0.9; // Laptop/Desktop
-  };
-
   const cylinderWidth =
     viewportWidth <= 640
-      ? viewportWidth * 1.0 // 100%
+      ? viewportWidth * 1.0
       : viewportWidth <= 1024
-        ? 600
-        : 670;
+      ? 600
+      : 670;
 
   const faceCount = images.length;
   const faceWidth = (cylinderWidth / faceCount) * 5;
@@ -58,7 +55,7 @@ const RollingGallery = ({
 
   const transform = useTransform(
     rotation,
-    (val) => `rotate3d(0,1,0,${val}deg)`,
+    (val) => `rotate3d(0,1,0,${val}deg)`
   );
 
   const startInfiniteSpin = (startAngle) => {
@@ -113,24 +110,15 @@ const RollingGallery = ({
 
   return (
     <div className="relative w-full overflow-hidden py-12 bg-black">
-      {/* Gradient Overlays */}
-      <div className="p-5">
-        <h1>My Trip Miamai</h1>
+      <div className="p-5 text-white">
+        <h1 className="text-2xl font-bold">My Trip to Miami</h1>
       </div>
-      <div
-        className="absolute top-0 left-0 h-full z-10"
-        style={{
-          background: "linear-gradient(to left, transparent 0%, #060010 100%)",
-        }}
-      />
-      <div
-        className="absolute top-0 right-0 h-full z-10"
-        style={{
-          background: "linear-gradient(to right, transparent 0%, #060010 100%)",
-        }}
-      />
 
-      {/* Gallery */}
+      {/* Gradient overlays */}
+      <div className="absolute top-0 left-0 h-full w-16 z-10 bg-gradient-to-l from-transparent to-[#060010]" />
+      <div className="absolute top-0 right-0 h-full w-16 z-10 bg-gradient-to-r from-transparent to-[#060010]" />
+
+      {/* Gallery Cylinder */}
       <div className="flex h-full items-center justify-center [perspective:1000px]">
         <motion.div
           drag="x"
@@ -147,7 +135,7 @@ const RollingGallery = ({
             width: cylinderWidth,
             transformStyle: "preserve-3d",
           }}
-          className="flex min-h-[250px] cursor-grab items-center justify-center [transform-style:preserve-3d]"
+          className="flex min-h-[250px] cursor-grab items-center justify-center"
         >
           {images.map((url, i) => (
             <div
@@ -159,18 +147,19 @@ const RollingGallery = ({
                   (360 / faceCount) * i
                 }deg) translateZ(${radius}px)`,
               }}
+              onClick={() => setSelectedImage(url)}
             >
               <img
                 src={url}
-                alt="gallery"
-                className="pointer-events-none rounded-[15px] border-[3px] border-white object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+                alt={`gallery-${i}`}
+                className="pointer-events-auto rounded-xl border-[3px] border-white object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                 style={{
                   width:
-                    viewportWidth <= 640 // Mobile
+                    viewportWidth <= 640
                       ? "160px"
-                      : viewportWidth <= 1024 // Tablet
-                        ? "220px"
-                        : "160px", // Desktop
+                      : viewportWidth <= 1024
+                      ? "220px"
+                      : "160px",
                   height: "auto",
                   maxWidth: "95vw",
                 }}
@@ -179,6 +168,34 @@ const RollingGallery = ({
           ))}
         </motion.div>
       </div>
+
+      {/* Fullscreen Modal Preview */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            className="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-black/90 p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.img
+              src={selectedImage}
+              alt="Expanded view"
+              className="max-h-[90vh] max-w-[90vw] rounded-xl shadow-xl"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 200 }}
+            />
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-4 right-4 text-white text-3xl font-bold bg-black/60 px-4 py-2 rounded-lg hover:bg-red-600 transition"
+            >
+              ×
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
