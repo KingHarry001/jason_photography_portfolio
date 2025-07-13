@@ -160,8 +160,8 @@ function App() {
       <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
         <Dock
           items={Dockitems}
-          panelHeight={68}
-          baseItemSize={50}
+          panelHeight={60}
+          baseItemSize={40}
           magnification={70}
         />
       </div>
