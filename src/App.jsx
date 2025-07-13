@@ -157,7 +157,8 @@ function App() {
 
   return (
     <div className="w-full min-h-screen flex flex-col !p-0 !m-0 overflow-x-hidden">
-      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
+      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 overflow-x-hiddengit add .
+">
         <Dock
           items={Dockitems}
           panelHeight={60}
