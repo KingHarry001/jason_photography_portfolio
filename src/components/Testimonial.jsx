@@ -74,7 +74,7 @@ const Testimonial = () => {
           damping={0.45}
           fadeOut={0.6}
           ease="power3.out"
-          className="p-[3rem]"
+          className="py-[3rem]"
         />
       </div>
     </div>

@@ -12,7 +12,7 @@ export const useMedia = (queries, values, defaultValue) => {
     queries.forEach((q) => matchMedia(q).addEventListener("change", handler));
     return () =>
       queries.forEach((q) =>
-        matchMedia(q).removeEventListener("change", handler),
+        matchMedia(q).removeEventListener("change", handler)
       );
   }, [queries]);
 
@@ -44,8 +44,8 @@ const preloadImages = async (urls) => {
           const img = new Image();
           img.src = src;
           img.onload = img.onerror = () => resolve();
-        }),
-    ),
+        })
+    )
   );
 };
 
@@ -68,7 +68,7 @@ const Masonry = ({
       "(min-width:400px)",
     ],
     [5, 4, 3, 2],
-    1,
+    1
   );
 
   const [containerRef, { width }] = useMeasure();
@@ -108,7 +108,7 @@ const Masonry = ({
 
   useEffect(() => {
     preloadImages(Masonryitems.map((i) => i.img)).then(() =>
-      setImagesReady(true),
+      setImagesReady(true)
     );
   }, [Masonryitems]);
 
@@ -123,7 +123,11 @@ const Masonry = ({
     const items = Masonryitems.map((child) => {
       const col = colHeights.indexOf(Math.min(...colHeights));
       const x = col * (columnWidth + gap);
-      const height = child.height;
+      const height =
+        columns === 1
+          ? child.height / 2.5 // 📱 mobile view: larger image height
+          : child.height / 1.5; // 🖥️ desktop/tablet view: smaller height
+
       const y = colHeights[col];
 
       colHeights[col] += height + gap;
@@ -167,7 +171,7 @@ const Masonry = ({
             duration: 0.8,
             ease: "power3.out",
             delay: index * stagger,
-          },
+          }
         );
       } else {
         gsap.to(selector, {
@@ -266,7 +270,7 @@ const Masonry = ({
               onClick={(e) => {
                 e.stopPropagation();
                 setSelectedIndex((prev) =>
-                  prev === 0 ? Masonryitems.length - 1 : prev - 1,
+                  prev === 0 ? Masonryitems.length - 1 : prev - 1
                 );
               }}
             >
@@ -278,7 +282,7 @@ const Masonry = ({
               onClick={(e) => {
                 e.stopPropagation();
                 setSelectedIndex((prev) =>
-                  prev === Masonryitems.length - 1 ? 0 : prev + 1,
+                  prev === Masonryitems.length - 1 ? 0 : prev + 1
                 );
               }}
             >
